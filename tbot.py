@@ -1,6 +1,7 @@
 from typing import Final
 from telegram import Update
 from telegram.ext import Application, filters, CommandHandler, MessageHandler, ContextTypes
+import weather
 
 #Bot information
 token: Final = '5195207128:AAFcw60NxAeR5sn-ZkzxpxgRJVSmXR4KWuc'
@@ -19,7 +20,7 @@ bot_username: Final = 'hello_miderBot'
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Hello , Im a Master Robot! I am your assistant')
 
-async def template_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def t_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args: list = context.args
     args_count: int = len(context.args)
 
@@ -38,13 +39,21 @@ async def template_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         case 4:
             response: str = template_response(args)
-            await update.message.reply_text(response
-                                            )
+            await update.message.reply_text(response)
         case _:
             await update.message.reply_text('You inputted more than 4 arguments or Unexpected Error!')
 
+async def w_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    args: list = context.args
+    args_count: int = len(context.args)
 
+    match args_count:
+        case 0:
+            await update.message.reply_text('This is a /w command. For correct operation give an arguments ["Name_of_city"]')
 
+        case 1:
+            result:str = weather.weather_api_handler(args)
+            await update.message.reply_text(result)
 
 
 
@@ -96,7 +105,12 @@ def name_of_executor_handler(name: str) -> str:
         'рс': 'Руслан Сабитов',
         'вг': 'Владимир Гуржий',
         'аа': 'Алихан Аллаяров',
-        'тм': 'Темирлан Мырзатаев'
+        'тм': 'Темирлан Мырзатаев',
+        'ed': 'Эдуард Шнабель',
+        'rs': 'Руслан Сабитов',
+        'vg': 'Владимир Гуржий',
+        'aa': 'Алихан Аллаяров',
+        'tm': 'Темирлан Мырзатаев'
     }
     for u, n in dict_of_executors.items():
         if u == name:
@@ -114,7 +128,12 @@ def template_importance_handler(importance: str) -> str:
         'к': 'Критическая',
         'з': 'Значительная',
         'н': 'Незначительная',
-        'т': 'Тривиальная'
+        'т': 'Тривиальная',
+        ',': 'Блокирующая',
+        'r': 'Критическая',
+        'p': 'Значительная',
+        'y': 'Незначительная',
+        'n': 'Тривиальная'
     }
 
     for u, n in dict_of_importance.items():
@@ -179,7 +198,8 @@ def main():
 
     #add CommandHandlers
     app.add_handler(CommandHandler('start', start_command))
-    app.add_handler(CommandHandler('t', template_command))
+    app.add_handler(CommandHandler('t', t_command))
+    app.add_handler(CommandHandler('w', w_command))
 
     #add MessageHandlers
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
