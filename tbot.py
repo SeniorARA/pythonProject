@@ -52,7 +52,7 @@ async def w_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text('This is a /w command. For correct operation give an arguments ["Name_of_city"]')
 
         case 1:
-            result:str = weather.weather_api_handler(args)
+            result: str = weather.weather_api_handler(args)
             await update.message.reply_text(result)
 
 
