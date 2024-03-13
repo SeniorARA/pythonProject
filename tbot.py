@@ -9,17 +9,15 @@ bot_username: Final = 'hello_miderBot'
 
 
 
-
-
-
-
-
-
-
 #Commands
+
+#/start Command Handler
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Hello , Im a Master Robot! I am your assistant')
 
+
+
+#/t Command Handler
 async def t_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args: list = context.args
     args_count: int = len(context.args)
@@ -43,6 +41,9 @@ async def t_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         case _:
             await update.message.reply_text('You inputted more than 4 arguments or Unexpected Error!')
 
+
+
+#/w Command Handler
 async def w_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args: list = context.args
     args_count: int = len(context.args)
@@ -54,13 +55,6 @@ async def w_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         case 1:
             result: str = weather.weather_api_handler(args)
             await update.message.reply_text(result)
-
-
-
-
-
-
-
 
 
 
@@ -79,6 +73,11 @@ def handle_response(text: str) -> str:
 
     return response
 
+
+
+#Template Handle Methods
+
+#Main Template-Response Method
 def template_response(args: list) -> str:
     template_of_message: str = '''Ваша заявка зарегистрирована. \nСсылка: {} \nИсполнитель: {} \nКритичность: {} \nВремя решения: {}'''
     processed_list: list = []
@@ -98,6 +97,7 @@ def template_response(args: list) -> str:
     return result
 
 
+#Handler of "Template-text's Name of Executor" Method
 def name_of_executor_handler(name: str) -> str:
     result: str = ''
     dict_of_executors: dict = {
@@ -121,6 +121,8 @@ def name_of_executor_handler(name: str) -> str:
 
     return result
 
+
+#Handler of "Template-text's Importance" Method
 def template_importance_handler(importance: str) -> str:
     result: str = ''
     dict_of_importance: dict = {
@@ -129,11 +131,11 @@ def template_importance_handler(importance: str) -> str:
         'з': 'Значительная',
         'н': 'Незначительная',
         'т': 'Тривиальная',
-        ',': 'Блокирующая',
-        'r': 'Критическая',
-        'p': 'Значительная',
-        'y': 'Незначительная',
-        'n': 'Тривиальная'
+        'b': 'Блокирующая',
+        'k': 'Критическая',
+        'z': 'Значительная',
+        'n': 'Незначительная',
+        't': 'Тривиальная'
     }
 
     for u, n in dict_of_importance.items():
@@ -152,10 +154,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     #Message objects
     message_type: str = update.message.chat.type
     message_text: str = update.message.text
-    message_user_id: str = update.message.chat.id
+    message_user_id: int = update.message.chat.id
     message_user_name: str = update.message.chat.first_name
 
-    print(f'User ({message_user_id}) - ({message_user_name}) in {message_type}: {message_text}')
+    print(f'User ({str(message_user_id)}) - ({message_user_name}) in {message_type}: {message_text}')
 
     if message_type =='group':
         if bot_username in message_text:
@@ -172,25 +174,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 
-
-
-
-
-
-
 # Error Handler
 def error_handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {Update} caused Error : {context.error}')
 
 
-
-
-
-
-
-
-
-
+#Main Function
 def main():
     #Application
     print('Application is started')
